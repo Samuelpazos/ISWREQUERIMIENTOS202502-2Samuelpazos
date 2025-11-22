@@ -1,0 +1,101 @@
+{% extends 'clinic/base.html' %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Quick Actions -->
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="px-4 py-5 sm:p-6">
+            <h3 class="text-xl leading-6 font-bold text-primary mb-4 font-serif">Acciones Rápidas</h3>
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <a href="{% url 'owner_create' %}"
+                    class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-secondary focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary">
+                    <div class="flex-shrink-0">
+                        <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-primary">
+                            👤
+                        </div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <span class="absolute inset-0" aria-hidden="true"></span>
+                        <p class="text-sm font-medium text-neutral">Registrar Dueño</p>
+                    </div>
+                </a>
+
+                <a href="{% url 'pet_create' %}"
+                    class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-secondary focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary">
+                    <div class="flex-shrink-0">
+                        <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-primary">
+                            🐾
+                        </div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <span class="absolute inset-0" aria-hidden="true"></span>
+                        <p class="text-sm font-medium text-neutral">Registrar Mascota</p>
+                    </div>
+                </a>
+
+                <a href="{% url 'appointment_create' %}"
+                    class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-secondary focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary">
+                    <div class="flex-shrink-0">
+                        <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-primary">
+                            📅
+                        </div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <span class="absolute inset-0" aria-hidden="true"></span>
+                        <p class="text-sm font-medium text-neutral">Agendar Cita</p>
+                    </div>
+                </a>
+
+                {% if user.is_superuser or 'Veterinario' in user.groups.all.0.name %}
+                <a href="{% url 'medical_history_create' %}"
+                    class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-secondary focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary">
+                    <div class="flex-shrink-0">
+                        <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-primary">
+                            📋
+                        </div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <span class="absolute inset-0" aria-hidden="true"></span>
+                        <p class="text-sm font-medium text-neutral">Historial Médico</p>
+                    </div>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Upcoming Appointments -->
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="px-4 py-5 sm:p-6">
+            <h3 class="text-xl leading-6 font-bold text-primary mb-4 font-serif">Próximas Citas</h3>
+            <div class="flow-root">
+                <ul role="list" class="-my-5 divide-y divide-gray-200">
+                    {% for appointment in appointments %}
+                    <li class="py-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-neutral truncate">
+                                    {{ appointment.date }} - {{ appointment.time }}
+                                </p>
+                                <p class="text-sm text-gray-500 truncate">
+                                    Dr. {{
+                                    appointment.veterinarian.get_full_name|default:appointment.veterinarian.username }}
+                                </p>
+                            </div>
+                            <div>
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary text-white">
+                                    {{ appointment.get_status_display }}
+                                </span>
+                            </div>
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="py-4 text-sm text-gray-500">No hay citas pendientes.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
